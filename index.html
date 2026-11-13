@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>𝐀𝐭𝐭𝐚𝐜𝐤 𝐂𝐲𝐛𝐞𝐫 𝐒𝐞𝐜𝐮𝐫𝐢𝐭𝐲 -𝐀𝐂𝐒</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ background:#000;color:#00ff41;
+ font-family:Consolas,monospace;
+ min-height:100vh;
+}
+#matrix{
+ position:fixed;inset:0;width:100%;height:100%;
+ z-index:-1;opacity:.23;
+}
+header{
+ text-align:center;padding:22px 10px;
+ background:rgba(0,10,3,.92);
+ border-bottom:1px solid #00ff41;
+ box-shadow:0 0 20px #00ff4155;
+}
+header h1{font-size:24px;letter-spacing:2px}
+header p{font-size:10px;margin-top:8px}
+.container{
+ display:grid;grid-template-columns:1fr 290px;
+ gap:14px;padding:14px;
+}
+.panel{
+ background:rgba(0,12,4,.95);
+ border:1px solid #087d32;
+ padding:14px;margin-bottom:14px;
+ box-shadow:0 0 12px #00ff4118;
+}
+h3{
+ font-size:14px;margin-bottom:13px;
+ border-bottom:1px solid #145e2a;
+ padding-bottom:9px;
+}
+.terminal{
+ height:350px;overflow-y:auto;
+ background:#000;padding:12px;
+ font-size:12px;line-height:1.8;
+ border:1px solid #087d32;
+ overflow-wrap:anywhere;
+}
+.status{
+ display:flex;justify-content:space-between;
+ padding:9px 0;border-bottom:1px solid #123b1c;
+ font-size:11px;gap:5px;
+}
+.active{animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.3}}
+.bar{height:5px;background:#12301b;margin-top:7px}
+.fill{
+ height:100%;background:#00ff41;
+ box-shadow:0 0 10px #00ff41;
+}
+input,select{
+ width:100%;background:#000;
+ border:1px solid #087d32;padding:12px;
+ color:#00ff41;margin-top:9px;
+ font-family:Consolas,monospace;
+}
+button{
+ background:#001b08;color:#00ff41;
+ border:1px solid #00ff41;padding:11px;
+ font-family:Consolas,monospace;
+ cursor:pointer;margin-top:10px;
+}
+button:hover{background:#003b12;box-shadow:0 0 12px #00ff41}
+.full{width:100%}
+#work{display:none}
+#output{
+ height:260px;overflow-y:auto;background:#000;
+ border:1px solid #087d32;padding:12px;
+ font-size:12px;line-height:1.9;
+ overflow-wrap:anywhere;
+}
+#complete{
+ display:none;text-align:center;padding:35px 5px;
+ font-size:27px;font-weight:bold;
+ text-shadow:0 0 15px #00ff41;
+ animation:blink 1s infinite;
+}
+#complete p{font-size:11px;margin-top:15px}
+.radar{
+ width:190px;height:190px;
+ border:1px solid #00ff41;border-radius:50%;
+ margin:15px auto;position:relative;overflow:hidden;
+ background:
+ repeating-radial-gradient(circle,transparent 0 28px,#087d32 29px 30px),
+ linear-gradient(90deg,transparent 49.5%,#087d32 50%,transparent 50.5%),
+ linear-gradient(transparent 49.5%,#087d32 50%,transparent 50.5%);
+}
+.radar:after{
+ content:"";position:absolute;
+ width:50%;height:50%;left:50%;top:0;
+ transform-origin:bottom left;
+ background:linear-gradient(45deg,#00ff4144,transparent);
+ animation:rotate 3s linear infinite;
+}
+@keyframes rotate{to{transform:rotate(360deg)}}
+footer{text-align:center;padding:20px;font-size:10px}
+@media(max-width:750px){
+ .container{grid-template-columns:1fr}
+ header h1{font-size:19px}
+}
+</style>
+</head>
+
+<body>
+<canvas id="matrix"></canvas>
+
+<header>
+<h1>𝐀𝐭𝐭𝐚𝐜𝐤 𝐂𝐲𝐛𝐞𝐫 𝐒𝐞𝐜𝐮𝐫𝐢𝐭𝐲 -𝐀𝐂𝐒</h1>
+<p>𝐅𝟑𝐂𝐊 𝐘𝐎𝐔𝐑 𝐒𝐄𝐒𝐓𝐄𝐌</p>
+<p class="active">STATUS: ALIVE</p>
+</header>
+
+<div class="container">
+<main>
+
+<div class="panel">
+<h3>𝐘𝐎𝐔𝐑 𝐂𝐘𝐁𝐄𝐑 𝐓𝐄𝐑𝐌𝐈𝐍𝐀𝐋</h3>
+<div class="terminal" id="terminal">
+<div>[𝐀𝐂𝐒] Booting virtual cyber environment...</div>
+<div>[𝐒𝐘𝐒] Loading security protocols...</div>
+<div>[𝐍𝐄𝐓] Virtual network initialized...</div>
+<div>[𝐒𝐂𝐀𝐍] Scanning demo environment...</div>
+<div>[𝐃𝐀𝐑𝐊𝐍𝐄𝐓] ACS core successfully loaded...</div>
+<div>[𝐈𝐍𝐅𝐎] Simulation mode enabled...</div>
+</div>
+</div>
+
+<div class="panel">
+<h3>𝐋𝐈𝐕𝐄 𝐒𝐘𝐒𝐓𝐄𝐌 𝐌𝐎𝐍𝐈𝐓𝐎𝐑</h3>
+<div class="status"><span>CPU USAGE</span><span id="cpu">45%</span></div>
+<div class="bar"><div class="fill" id="cpuBar" style="width:45%"></div></div>
+<div class="status"><span>NETWORK STATUS</span><span>ACTIVE</span></div>
+<div class="status"><span>FIREWALL</span><span>RUNNING</span></div>
+<div class="status"><span>VIRTUAL SECURITY</span><span>PROTECTED</span></div>
+<div class="status"><span>ACS CORE</span><span>ONLINE</span></div>
+</div>
+
+<div class="panel">
+<h3>𝐀𝐍𝐘 𝐀𝐂𝐂𝐎𝐔𝐍𝐓 𝐀𝐂𝐂𝐄𝐒𝐒 𝐅𝐈𝐍𝐃</h3>
+
+<div id="setup">
+<p style="font-size:12px;line-height:1.8">
+𝐖𝐇𝐎 𝐈`𝐌 𝐘𝐎𝐔 𝐇𝐀𝐕𝐄 𝐍𝐎 𝐈𝐃𝐄𝐀
+</p>
+<label>𝐅𝐈𝐑𝐒𝐓 𝐖𝐎𝐑𝐊</label>
+<select id="duration">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="5">5</option>
+<option value="10">10</option>
+<option value="15">15</option>
+<option value="30">30</option>
+</select>
+<button class="full" onclick="startSimulation()">𝐒𝐓𝐀𝐑𝐓 𝐕𝐈𝐑𝐓𝐔𝐀𝐋 𝐀𝐂𝐂𝐄𝐒𝐒</button>
+</div>
+
+<div id="work">
+<div class="status">
+<span>𝐘𝐎𝐔𝐑 𝐖𝐎𝐑𝐊 𝐓𝐈𝐌𝐄</span>
+<span id="timer">00:00</span>
+</div>
+<div id="output"></div>
+<input id="commandInput" placeholder="Enter your virtual command..." autocomplete="off">
+<button class="full" onclick="sendCommand()">𝐄𝐗𝐄𝐂𝐔𝐓𝐄 𝐂𝐎𝐌𝐌𝐀𝐍𝐃</button>
+<button class="full" onclick="finishSimulation()">𝐒𝐓𝐎𝐏 𝐖𝐎𝐑𝐊</button>
+</div>
+
+<div id="complete">
+𝐎.𝐂.𝐂 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐄
+<p>𝐌𝐈𝐒𝐒𝐈𝐎𝐍 𝐎.𝐂.𝐂 𝐒𝐔𝐂𝐂𝐄𝐒𝐒𝐅𝐔𝐋𝐋𝐘 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐄𝐃</p>
+<button onclick="location.reload()">𝐑𝐄𝐒𝐓𝐀𝐑𝐓 𝐒𝐘𝐒𝐓𝐄𝐌</button>
+</div>
+</div>
+</main>
+
+<aside>
+
+<div class="panel">
+<h3>𝐀𝐂𝐓𝐈𝐕𝐄 𝐌𝐎𝐃𝐔𝐋𝐄𝐒</h3>
+<div class="status"><span>CAMERA MODULE</span><span class="active">SCANNING</span></div>
+<div class="status"><span>RADAR SCANNER</span><span>ACTIVE</span></div>
+<div class="status"><span>IP ANALYZER</span><span>ONLINE</span></div>
+<div class="status"><span>NETWORK TRACKER</span><span>RUNNING</span></div>
+<div class="status"><span>DATA ANALYZER</span><span>ACTIVE</span></div>
+<div class="status"><span>ENCRYPTION</span><span>READY</span></div>
+</div>
+
+<div class="panel">
+<h3>𝐕𝐈𝐂𝐓𝐈𝐌 𝐈𝐏 𝐑𝐀𝐃𝐄𝐑 𝐈𝐍𝐓𝐄𝐑𝐅𝐀𝐂𝐄</h3>
+<div class="radar"></div>
+<p style="text-align:center;font-size:11px">𝐕𝐈𝐂𝐓𝐈𝐌 𝐑𝐀𝐃𝐀𝐑 𝐀𝐂𝐓𝐈𝐕𝐄</p>
+
+<button id="soundBtn" class="full" onclick="toggleRadarSound()">
+𝐅𝐀𝐒𝐓 𝐁𝐎𝐒𝐒
+</button>
+</div>
+
+<div class="panel">
+<h3>𝐍𝐄𝐓𝐖𝐎𝐑𝐊 𝐀𝐂𝐓𝐈𝐕𝐈𝐓𝐘</h3>
+<div id="networkLogs" style="font-size:11px;line-height:2">
+<div>Initializing...</div>
+<div>Virtual nodes detected...</div>
+<div>Network simulation ready...</div>
+</div>
+</div>
+
+<div class="panel">
+<h3>𝐀𝐂𝐂𝐄𝐒𝐒 𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐓𝐈𝐎𝐍</h3>
+<div class="status"><span>SERVER</span><span>ACS-VIRTUAL</span></div>
+<div class="status"><span>PROTOCOL</span><span>HTTPS DEMO</span></div>
+<div class="status"><span>MODE</span><span>PRANK</span></div>
+</div>
+</aside>
+</div>
+
+<footer>
+𝐀𝐓𝐓𝐀𝐂𝐊 𝐂𝐘𝐁𝐄𝐑 𝐒𝐄𝐂𝐔𝐑𝐈𝐓𝐘 - 𝐀𝐂𝐒<br>
+𝐅𝟑𝐂𝐊 𝐘𝐎𝐔𝐑 𝐒𝐄𝐒𝐓𝐄𝐌
+</footer>
+
+<script>
+// MATRIX EFFECT
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
+let fontSize=14,drops=[];
+
+function resizeMatrix(){
+ canvas.width=innerWidth;
+ canvas.height=innerHeight;
+ drops=Array(Math.floor(canvas.width/fontSize)).fill(1);
+}
+resizeMatrix();
+window.addEventListener("resize",resizeMatrix);
+
+function drawMatrix(){
+ ctx.fillStyle="rgba(0,0,0,0.08)";
+ ctx.fillRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle="#00ff41";
+ ctx.font=fontSize+"px monospace";
+ for(let i=0;i<drops.length;i++){
+  ctx.fillText(String.fromCharCode(0x30A0+Math.random()*96),i*fontSize,drops[i]*fontSize);
+  if(drops[i]*fontSize>canvas.height&&Math.random()>.975)drops[i]=0;
+  drops[i]++;
+ }
+}
+setInterval(drawMatrix,45);
+
+// AUTOMATIC TERMINAL
+const terminal=document.getElementById("terminal");
+const commands=[
+"Initializing virtual security protocols...",
+"Analyzing simulated network nodes...",
+"Loading encrypted demo database...",
+"Checking virtual firewall response...",
+"Processing digital authentication...",
+"Updating virtual access parameters...",
+"Running system integrity check...",
+"Analyzing demo data packets...",
+"Virtual server connection established...",
+"Generating security report...",
+"Checking simulated camera module...",
+"Updating ACS configuration...",
+"Virtual network scan completed...",
+"Loading encryption module...",
+"Analyzing system response...",
+"Refreshing security database..."
+];
+
+function addLog(target,text){
+ let div=document.createElement("div");
+ div.textContent="[ACS] "+text;
+ target.appendChild(div);
+ while(target.children.length>100)target.removeChild(target.firstChild);
+ target.scrollTop=target.scrollHeight;
+}
+
+setInterval(()=>{
+ addLog(terminal,commands[Math.floor(Math.random()*commands.length)]);
+},1300);
+
+// MONITOR
+setInterval(()=>{
+ let v=Math.floor(Math.random()*60+30);
+ document.getElementById("cpu").textContent=v+"%";
+ document.getElementById("cpuBar").style.width=v+"%";
+},1800);
+
+// NETWORK
+setInterval(()=>{
+ let m=["Virtual node updated...","Demo packet processed...","Network simulation running...","Virtual connection stable...","Security layer refreshed..."];
+ addLog(document.getElementById("networkLogs"),m[Math.floor(Math.random()*m.length)]);
+},2500);
+
+// RADAR SOUND SYSTEM
+let audioContext=null;
+let radarSoundOn=false;
+let radarTimer=null;
+
+async function toggleRadarSound(){
+ if(!audioContext){
+  audioContext=new (window.AudioContext||window.webkitAudioContext)();
+ }
+ await audioContext.resume();
+ radarSoundOn=!radarSoundOn;
+
+ document.getElementById("soundBtn").textContent=
+ radarSoundOn?"RADAR: ON":"RADAR: OFF";
+
+ clearInterval(radarTimer);
+
+ if(radarSoundOn){
+  playRadarBeep();
+  radarTimer=setInterval(playRadarBeep,1800);
+ }
+}
+
+function playRadarBeep() {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(1150, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(
+        850,
+        audioCtx.currentTime + 1.2
+    );
+
+    gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(
+        0.35,
+        audioCtx.currentTime + 0.04
+    );
+    gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        audioCtx.currentTime + 1.4
+    );
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start();
+    osc.stop(audioCtx.currentTime + 1.4);
+}
+
+// ACCESS SIMULATION
+let remaining=0;
+let timerInterval=null;
+let logInterval=null;
+let running=false;
+
+const output=document.getElementById("output");
+
+function startSimulation(){
+ if(running)return;
+ running=true;
+ remaining=Number(document.getElementById("duration").value)*60;
+
+ document.getElementById("setup").style.display="none";
+ document.getElementById("work").style.display="block";
+ output.innerHTML="";
+
+ addLog(output,"Starting virtual access sequence...");
+ addLog(output,"Loading ACS command interface...");
+ addLog(output,"Virtual environment ready...");
+
+ const auto=[
+ "Establishing virtual session...",
+ "Analyzing demo authentication layer...",
+ "Checking simulated security credentials...",
+ "Virtual data stream initialized...",
+ "Processing encrypted demo packets...",
+ "Running virtual access protocol...",
+ "Updating digital security parameters...",
+ "Checking simulated server response...",
+ "Generating demo security report...",
+ "System response received...",
+ "Refreshing virtual network connection...",
+ "Analyzing simulated database...",
+ "ACS protocol verification complete...",
+ "Virtual security scan in progress...",
+ "Loading advanced system interface..."
+ ];
+
+ logInterval=setInterval(()=>{
+  if(!running)return;
+  addLog(output,auto[Math.floor(Math.random()*auto.length)]);
+  if(Math.random()>.65){
+   addLog(output,"PROCESS STATUS: "+["RUNNING","ANALYZING","PROCESSING","VERIFYING"][Math.floor(Math.random()*4)]);
+  }
+ },1100);
+
+ updateTimer();
+ timerInterval=setInterval(()=>{
+  remaining--;
+  updateTimer();
+  if(remaining<=0)finishSimulation();
+ },1000);
+}
+
+function sendCommand(){
+ if(!running)return;
+ const input=document.getElementById("commandInput");
+ const value=input.value.trim();
+ if(!value)return;
+
+ addLog(output,"> "+value);
+ input.value="";
+
+ const replies=[
+ "Command received. Processing virtual request...",
+ "Analyzing command parameters...",
+ "Virtual protocol updated successfully...",
+ "Running simulated system response...",
+ "Command execution simulation completed...",
+ "Generating virtual response..."
+ ];
+
+ setTimeout(()=>{
+  if(running)addLog(output,replies[Math.floor(Math.random()*replies.length)]);
+ },400);
+ input.focus();
+}
+
+document.getElementById("commandInput").addEventListener("keydown",e=>{
+ if(e.key==="Enter")sendCommand();
+});
+
+function updateTimer(){
+ let m=Math.floor(remaining/60),s=remaining%60;
+ document.getElementById("timer").textContent=
+ String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+
+function finishSimulation(){
+ if(!running)return;
+ running=false;
+ clearInterval(timerInterval);
+ clearInterval(logInterval);
+ document.getElementById("work").style.display="none";
+ document.getElementById("complete").style.display="block";
+}
+</script>
+</body>
+</html>
